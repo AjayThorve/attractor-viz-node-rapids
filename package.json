@@ -6,12 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "./install-node-rapids.sh"
   },
   "dependencies": {
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-map-gl": "^5.0.0",
+    "victory": "36.5.3",
+    "@deck.gl/carto": "8.7.12",
+    "@deck.gl/core": "8.7.12",
+    "@deck.gl/layers": "8.7.12",
+    "@deck.gl/react": "8.7.12",
+    "apache-arrow": "8.0.0",
+    "d3": "7.6.1",
+    "loadtest": "^5.2.0"
   },
   "devDependencies": {
     "eslint": "8.22.0",
