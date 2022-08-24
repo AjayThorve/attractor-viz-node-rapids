@@ -2,8 +2,8 @@
 import React, {useState, useEffect} from 'react';
 import {render} from 'react-dom';
 import DeckGL from '@deck.gl/react';
-import {OrthographicView} from '@deck.gl/core';
-import {ScatterplotLayer} from '@deck.gl/layers';
+import {OrbitView} from '@deck.gl/core';
+import {PointCloudLayer} from '@deck.gl/layers';
 import {tableFromIPC} from 'apache-arrow';
 import ControlPanel from '../components/utils/controlPanel';
 import { ColorPicker } from '../components/utils/colorPicker';
@@ -11,14 +11,14 @@ import * as d3 from 'd3';
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
-  rotationX: 20,
+  rotationX: 0,
   rotationOrbit: 0,
-  minZoom: -5,
+  minZoom: 0,
   maxZoom: 10,
-  zoom: -3
+  zoom: 4
 };
 
-async function requestData(type='svensson/coords', params=null){
+async function requestData(type='lorenz/coords', params=null){
     let url = `/api/attractors/${type}`;
     if(params!=null){
         url += `?${params}`;
@@ -36,10 +36,9 @@ async function requestStats(type='numRows', params=null){
     return await fetch(url, {method: 'GET', 'headers': {'Access-Control-Allow-Origin': "*"}}).then(res => res.json());
 }
 const settings =  {
-  'a': {min: -10, max: 100, step: 0.1, value: 1.4, datafixed: "true"},
-  'b': {min: -10, max: 10, step: 0.1, value: 1.56, datafixed: "true"},
-  'c': {min: -10, max: 100, step: 0.1, value: 1.40, datafixed: "true"},
-  'd': {min: -10, max: 100, step: 0.1, value: -2.56, datafixed: "true"},
+  'a': {min: -10, max: 100, step: 0.1, value: 10, datafixed: "false"},
+  'b': {min: -10, max: 10, step: 0.1, value: 2.667, datafixed: "false"},
+  'c': {min: -10, max: 100, step: 0.1, value: 28, datafixed: "false"},
   'n': {min: 100000, max: 50000000, step: 10000, value: 100000, datafixed: "false"}
 }
 
@@ -71,39 +70,41 @@ export default function App({onLoad}) {
     rotateCamera();
   }, [isLoaded]);
 
-  async function getData(n){
-    const data_coords = await requestData('svensson/coords',
-    `n=${n}`
+  async function getData(values){
+    const data_coords = await requestData('lorenz/coords',
+    `a=${values.a.value}&b=${values.b.value}&c=${values.c.value}&n=${values.n.value}`
     );
     const positions = data_coords.data[0].children[0].values;
     return {
-        length: positions ? (positions.length)/2 : 1,
+        length: positions ? (positions.length)/3 : 1,
         attributes: {
-            getPosition: {value: positions, size:2},
+            getPosition: {value: positions, size:3},
         }
     };
   }
 
   const layers = [
-    new ScatterplotLayer({
-      id: 'scatter-plot-layer',
+    new PointCloudLayer({
+      id: 'point-cloud-plot-layer',
       data: data,
       pickable: true,
-      opacity: 0.4,
+      opacity: 1,
       stroked: false,
+      extruded: true,
       filled: true,
       autoHighlight: true,
-      getFillColor: color,
-      getRadius: parseInt(radius),
+      getColor: color,
+      getNormal: [1,1,1],
+      pointSize: radius,
       updateTriggers: {
-        getFillColor: color,
-        getRadius: radius
+        getColor: color,
+        pointSize: radius
       }
     })
   ];
   async function updateConfig(s){
     setConfig({...config, ...s});
-    const data = await getData(s.n.value);
+    const data = await getData(s);
     setData(data);
   }
   function updateRadius(e){
@@ -116,7 +117,7 @@ export default function App({onLoad}) {
   return (
     <div>
     <DeckGL
-      views={new OrthographicView({id: '2d-scene', controller: true})}
+      views={new OrbitView({orbitAxis: 'Y', fov: 50})}
       viewState={viewState}
       controller={true}
       onViewStateChange={v => updateViewState(v.viewState)}
@@ -139,7 +140,7 @@ export default function App({onLoad}) {
           </p>
           <div className='input'>
             <label style={{"marginRight": "10px"}}>Radius</label>
-            <input type="range" value={radius} onChange={updateRadius} min={1} max={30} step={1}></input>
+            <input type="range" value={radius} onChange={updateRadius} min={1} max={9} step={1}></input>
             <label>{radius}</label>
           </div>
           <div className='input'>

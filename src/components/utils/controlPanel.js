@@ -43,14 +43,14 @@ export default class ControlPanel extends Component {
 
   _renderSlider(key, displayName, props) {
     return (
-      <div className="input">
+      <div className="input" key={key}>
         <label>{displayName}</label>
         <input
           type="range"
           {...props}
           value={this.state[key].value}
           onChange={(e) => {
-            if(!this.state[key].datafixed){
+            if(this.state[key].datafixed == "false"){
               this.setState({[key]: {...this.state[key], value: e.target.value}});
             }
           }

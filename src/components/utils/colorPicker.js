@@ -7,10 +7,10 @@ export const ColorPicker = (props) => {
   const [state, setState] = useState({
     displayColorPicker: false,
     color: {
-      r: '241',
-      g: '112',
-      b: '19',
-      a: '1',
+      r: '255',
+      g: '140',
+      b: '0',
+      a: '255',
     },
   });
 
@@ -23,6 +23,7 @@ export const ColorPicker = (props) => {
   };
 
   const handleChange = (color) => {
+    console.log(color);
     setState({...state, color: color.rgb });
     props.onChange(Object.values(color.rgb));
   };
