@@ -19,7 +19,8 @@ const nextConfig = {
         '@rapidsai/cudf': '@rapidsai/cudf',
         'apache-arrow': 'apache-arrow'
       });
-    }
+    }    
+
     // console.log(require('util').inspect({ isServer, config }, false, Infinity, true));
     // Important: return the modified config
     return config;
