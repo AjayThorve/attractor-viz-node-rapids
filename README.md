@@ -1,7 +1,5 @@
 # Attractor panel Viz using node-rapids
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Installation
 
 ```bash
@@ -20,7 +18,7 @@ npm run dev
 yarn dev
 ```
 
-1. Svensson Attractor (pre-generated dataset)
+### Svensson Attractor (pre-generated dataset)
 
 Generate the dataset using python scripts provided in the `python/dataset_gen.py`.
 
@@ -28,7 +26,7 @@ Go to `http://localhost:3000/svensson` :
 
 ![demo-svensson](./public/svensson.png)
 
-2. Lorenz Attractor (realtime generation)
+### Lorenz Attractor (realtime generation)
 
 Go to `http://localhost:3000/lorenz` :
 
